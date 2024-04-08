@@ -7,5 +7,3 @@ CREATE TABLE cliente(
     Telefono INT(11),
     PRIMARY KEY(id_cliente)
 )
-
-
