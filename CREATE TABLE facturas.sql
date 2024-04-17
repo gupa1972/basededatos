@@ -6,9 +6,6 @@ CREATE TABLE
         IVA DECIMAL(4, 2) NOT NULL,
         Cod_cli INT (3) NOT NULL,
         Cod_produ INT (3) NOT NULL
-    )
-
-    ALTER TABLE facturas add(
         FOREIGN KEY (Cod_cli) REFERENCES cliente(id_cliente),
         FOREIGN KEY (Cod_produ) REFERENCES productos(id_producto)
     )
