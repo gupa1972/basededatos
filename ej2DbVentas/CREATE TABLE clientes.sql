@@ -1,4 +1,4 @@
-CREATE TABLE cliente(
+CREATE TABLE clientes(
     Cuit_Cli INT(12) NOT NULL AUTO_INCREMENT,
     Nombre VARCHAR(50) NOT NULL,
     Calle VARCHAR(50) NOT NULL,

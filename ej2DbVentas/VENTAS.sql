@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-04-2024 a las 19:50:00
+-- Tiempo de generación: 19-04-2024 a las 20:21:33
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -24,15 +24,45 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `Id_Categoria` int(3) NOT NULL,
+  `Nombre` varchar(50) NOT NULL,
+  `Descripcion` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `clientes`
 --
 
 CREATE TABLE `clientes` (
-  `id_cliente` int(3) NOT NULL,
+  `Cuit_Cli` int(12) NOT NULL,
   `Nombre` varchar(50) NOT NULL,
-  `Apellido` varchar(50) NOT NULL,
-  `Domicilio` varchar(100) NOT NULL,
-  `Telefono` int(11) DEFAULT NULL
+  `Calle` varchar(50) NOT NULL,
+  `Numero` varchar(50) NOT NULL,
+  `Comuna` varchar(50) NOT NULL,
+  `Ciudad` varchar(50) NOT NULL,
+  `Telefono` int(13) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `productos`
+--
+
+CREATE TABLE `productos` (
+  `Id_Producto` int(3) NOT NULL,
+  `Nombre` varchar(50) NOT NULL,
+  `Precio_actual` decimal(10,2) NOT NULL,
+  `Numero` varchar(50) NOT NULL,
+  `Stock` int(3) NOT NULL,
+  `FKCuitProv` int(12) NOT NULL,
+  `FKId_Categ` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -52,15 +82,45 @@ CREATE TABLE `proveedores` (
   `Pagina_Web` int(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventas`
+--
+
+CREATE TABLE `ventas` (
+  `Nro_Factura` int(13) NOT NULL,
+  `Fecha` date NOT NULL,
+  `Cantidad` int(5) NOT NULL,
+  `Descuento` decimal(10,2) NOT NULL,
+  `Monto_Final` decimal(10,2) NOT NULL,
+  `FKId_Producto` int(3) NOT NULL,
+  `FKCuit_Cli` int(12) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Índices para tablas volcadas
 --
 
 --
+-- Indices de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`Id_Categoria`);
+
+--
 -- Indices de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`id_cliente`);
+  ADD PRIMARY KEY (`Cuit_Cli`);
+
+--
+-- Indices de la tabla `productos`
+--
+ALTER TABLE `productos`
+  ADD PRIMARY KEY (`Id_Producto`),
+  ADD KEY `FKCuitProv` (`FKCuitProv`),
+  ADD KEY `FKId_Categ` (`FKId_Categ`);
 
 --
 -- Indices de la tabla `proveedores`
@@ -69,20 +129,64 @@ ALTER TABLE `proveedores`
   ADD PRIMARY KEY (`Cuit_Prov`);
 
 --
+-- Indices de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD PRIMARY KEY (`Nro_Factura`),
+  ADD KEY `FKId_Producto` (`FKId_Producto`),
+  ADD KEY `FKCuit_Cli` (`FKCuit_Cli`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `Id_Categoria` int(3) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_cliente` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cuit_Cli` int(12) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `productos`
+--
+ALTER TABLE `productos`
+  MODIFY `Id_Producto` int(3) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
   MODIFY `Cuit_Prov` int(12) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  MODIFY `Nro_Factura` int(13) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `productos`
+--
+ALTER TABLE `productos`
+  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`FKCuitProv`) REFERENCES `proveedores` (`Cuit_Prov`),
+  ADD CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`FKId_Categ`) REFERENCES `categorias` (`Id_Categoria`);
+
+--
+-- Filtros para la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`FKId_Producto`) REFERENCES `productos` (`Id_Producto`),
+  ADD CONSTRAINT `ventas_ibfk_2` FOREIGN KEY (`FKCuit_Cli`) REFERENCES `clientes` (`Cuit_Cli`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
